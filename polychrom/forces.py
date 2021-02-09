@@ -915,7 +915,9 @@ def tether_particles(sim_object, particles, k=30, positions="current", name="Tet
         Can be provided as a vector [kx, ky, kz].
     """
 
-    energy = "kx * (x - x0)^2 + ky * (y - y0)^2 + kz * (z - z0)^2"
+    #energy = "kx * (x - x0)^2 + ky * (y - y0)^2 + kz * (z - z0)^2"
+    energy = "k*periodicdistance(x, y, z, x0, y0, z0)^2"
+    
     force = openmm.CustomExternalForce(energy)
     force.name = name
 
@@ -930,9 +932,11 @@ def tether_particles(sim_object, particles, k=30, positions="current", name="Tet
         kx, ky, kz = k, k, k
 
     nm2 = simtk.unit.nanometer * simtk.unit.nanometer
-    force.addGlobalParameter("kx", kx * sim_object.kT / nm2)
-    force.addGlobalParameter("ky", ky * sim_object.kT / nm2)
-    force.addGlobalParameter("kz", kz * sim_object.kT / nm2)
+    #force.addGlobalParameter("kx", kx * sim_object.kT / nm2)
+    #force.addGlobalParameter("ky", ky * sim_object.kT / nm2)
+    #force.addGlobalParameter("kz", kz * sim_object.kT / nm2)
+    force.addGlobalParameter("k", k * sim_object.kT / nm2)
+
     force.addPerParticleParameter("x0")
     force.addPerParticleParameter("y0")
     force.addPerParticleParameter("z0")
